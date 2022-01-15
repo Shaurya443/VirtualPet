@@ -10,8 +10,8 @@ var Lastfeed
 function preload()
 
 {
-  dogimg1 = loadImage("images/Dog.png")
-  dogimg2 = loadImage("images/happydog.png")
+  dog1 = loadImage("images/Dog.png")
+  dog2 = loadImage("images/happydog.png")
 	//load images here
 }
 
@@ -29,7 +29,7 @@ function setup() {
 
   var dogo = database.ref('Food');
   dogo.on("value", readPosition, showError);
-feed = createButton("FEED DOGO")
+feed = createButton("FEED Drago")
 feed.position(500,15)
 feed.mousePressed(FeedDog)
 add = createButton("ADD FOOD")
