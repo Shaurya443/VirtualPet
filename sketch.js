@@ -2,7 +2,8 @@ var dog,dogImg,dogImg1;
 var database;
 var foodS,foodStock;
 var feed,addFood;
-var fedTime,lastFed;
+var FeedTime;
+var LastFeed;
 var foodObj;
 
 function preload(){
@@ -12,8 +13,8 @@ function preload(){
 
 //Function to set initial environment
 function setup() {
-  //database=firebase.database();
-  createCanvas(600,500);
+  database=firebase.database();
+  createCanvas(1000,500);
 
   foodObj = new Food();
 
@@ -21,22 +22,22 @@ function setup() {
   dog.addImage(dogImg);
   dog.scale=0.15;
 
-  foodStock=database.ref('Food');
-  foodStock.on("value",readStock);
+  var dogo=database.ref('Food');
+  dogo.on("value",readPosition,showError);
   textSize(20); 
 
   fedTime=database.ref('FeedTime');
   fedTime.on("value",function(data){
     lastFed=data.val();
   });
-
-  feed=createButton("Feed the dog");
+feed=createButton("Feed the dog");
   feed.position(700,95);
   feed.mousePressed(feedDog);
 
   addFood=createButton("Add Food");
   addFood.position(800,95);
-  addFood.mousePressed(addFoods);
+  addFood.mousePressed(addFood);
+  
 }
 
 
@@ -45,9 +46,8 @@ function draw() {
 
   foodObj.display();
  
- 
-
   drawSprites();
+  
   fill(255,255,254);
   stroke("black");
   text("Food remaining : "+foodS,170,100);
@@ -65,17 +65,23 @@ function draw() {
 
 }
 
-//Function to read values from DB
-function readStock(data){
-  foodS=data.val();
-}
-
-
 //function to read food Stock
 function readStock(data){
   foodS=data.val();
   foodObj.updateFoodStock(foodS);
 }
+
+function writePosition(nazo){
+  if(nazo>0){
+    nazo=nazo-1
+  }
+     else{
+    nazo=0
+  }
+   
+    database.ref('/').set({
+    'Food': nazo
+  })
 
 function feedDog(){
   dog.addImage(dogImg1);
@@ -88,9 +94,13 @@ function feedDog(){
   })
 }
 
-function addFoods(){
+function addFood(){
   foodS++;
   database.ref('/').update({
     Food:foodS
   })
+   
+   function showError(){
+      console.log("Error in writing to the database");
+   }
 }
